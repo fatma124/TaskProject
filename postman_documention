@@ -1,0 +1,27 @@
+ Auth
+  - Register
+  - Login
+
+ Orders
+  - Create Order
+  - Update Order
+  - Delete Order
+  - List Orders (with status filter)
+
+ Payments
+  - Process Payment
+  - List Payments
+
+
+POST /api/orders
+Authorization: Bearer TOKEN
+
+{
+  "items": [
+    {
+      "product_name": "Phone",
+      "quantity": 1,
+      "price": 500
+    }
+  ]
+}

@@ -12,6 +12,19 @@ class OrderController extends Controller
     {
         $this->middleware('auth:api'); 
     }
+    public function index(Request $request)
+    {
+        $query = Order::where('user_id', auth()->id());
+
+        if ($request->has('status')) {
+            $query->where('status', $request->status);
+        }
+
+        $orders = $query->paginate(10);
+
+        return response()->json($orders);
+    }
+
     public function store(Request $request)
     {
         
@@ -43,5 +56,15 @@ class OrderController extends Controller
 
             return response()->json($order->load('items'), 201);
         }
+
+        public function destroy(Order $order)
+        {
+            $this->authorize('delete', $order);
+
+            $order->delete();
+
+            return response()->json(['message' => 'Order deleted']);
+        }
+
 
 }
