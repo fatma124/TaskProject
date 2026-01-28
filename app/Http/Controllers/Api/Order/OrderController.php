@@ -8,9 +8,19 @@ use App\Models\OrderItem;
 
 class OrderController extends Controller
 {
+    public function __construct()
+    {
+        $this->middleware('auth:api'); 
+    }
     public function store(Request $request)
     {
         
+        if (!auth()->check()) {
+            return response()->json([
+                'status' => 'error',
+                'message' => 'You must be logged in to place an order.'
+            ], 401);
+        }
             $data = $request->validate([
                 'items' => 'required|array',
                 'items.*.product_name' => 'required|string',
