@@ -14,6 +14,8 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->increments('id');
             // $table->foreignId('order_id')->constrained();
+            $table->bigInteger('order_id');
+
             $table->string('method');
             $table->enum('status', ['pending', 'successful', 'failed']);
             $table->timestamps();

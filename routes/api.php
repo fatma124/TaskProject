@@ -4,9 +4,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\OrderController;
-use App\Http\Controllers\PaymentController;
+use App\Http\Controllers\Api\User\AuthController;
+use App\Http\Controllers\Api\Order\OrderController;
+use App\Http\Controllers\Api\Order\PaymentController;
 
 
 

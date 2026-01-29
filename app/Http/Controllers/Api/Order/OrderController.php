@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Api\Order;
+use App\Http\Controllers\Controller;
 
 use Illuminate\Http\Request;
 use App\Models\Order;
@@ -45,7 +46,7 @@ class OrderController extends Controller
                 ->sum(fn($item) => $item['quantity'] * $item['price']);
 
             $order = Order::create([
-                'user_id' => auth()->id(),
+                'user_id' => auth('api')->id(),
                 'total' => $total,
                 'status' => 'pending'
             ]);

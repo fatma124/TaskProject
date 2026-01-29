@@ -1,6 +1,7 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api\Order;
+use App\Http\Controllers\Controller;
 
 use App\Models\Order;
 use App\Models\Payment;
