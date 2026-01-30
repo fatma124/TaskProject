@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Order;
 use App\Models\OrderItem;
+use Illuminate\Http\Response;
 
 class OrderController extends Controller
 {
@@ -13,6 +14,61 @@ class OrderController extends Controller
     {
         $this->middleware('auth:api'); 
     }
+   
+
+    public function update(Request $request, Order $order)
+    {
+    
+        if ($order->user_id !== auth()->id()) {
+            return response()->json(
+                ['message' => 'Unauthorized'],
+                Response::HTTP_FORBIDDEN
+            );
+        }
+
+       
+        if ($order->status !== 'pending') {
+            return response()->json(
+                ['message' => 'Only pending orders can be updated'],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+        if ($order->payments()->exists()) {
+            return response()->json(
+                ['message' => 'Order with payments cannot be updated'],
+                Response::HTTP_BAD_REQUEST
+            );
+        }
+
+    
+        $data = $request->validate([
+            'items' => 'required|array|min:1',
+            'items.*.product_name' => 'required|string',
+            'items.*.quantity' => 'required|integer|min:1',
+            'items.*.price' => 'required|numeric|min:0',
+        ]);
+
+      
+        $total = collect($data['items'])
+            ->sum(fn ($item) => $item['quantity'] * $item['price']);
+
+      
+        $order->update(['total' => $total]);
+
+       
+        $order->items()->delete();
+
+        foreach ($data['items'] as $item) {
+            $order->items()->create($item);
+        }
+
+        return response()->json(
+            $order->load('items'),
+            Response::HTTP_OK
+        );
+    }
+
     public function index(Request $request)
     {
         $query = Order::where('user_id', auth()->id());
